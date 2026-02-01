@@ -1,6 +1,7 @@
 package com.hyrinth.backend;
 
 import org.zyneonstudios.apex.utilities.logger.ApexLogger;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Arrays;
