@@ -2,7 +2,6 @@ package com.hyrinth.backend.entities;
 
 import com.hyrinth.backend.HyrinthBackend;
 import com.hyrinth.backend.storage.account.AccountRecord;
-
 import java.sql.Timestamp;
 import java.util.List;
 

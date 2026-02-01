@@ -62,6 +62,27 @@ public class JsonFileAccountSessionStorage implements AccountSessionStorage {
     }
 
     @Override
+    public boolean deleteByAccountId(String accountId) {
+        synchronized (lock) {
+            if (accountId == null || accountId.isBlank()) {
+                return false;
+            }
+            JSONArray sessions = sessionsArray();
+            boolean removed = false;
+            for (int i = sessions.size() - 1; i >= 0; i--) {
+                Object entry = sessions.get(i);
+                if (entry instanceof JSONObject session) {
+                    if (accountId.equals(session.getString("accountId"))) {
+                        sessions.remove(i);
+                        removed = true;
+                    }
+                }
+            }
+            return removed && save();
+        }
+    }
+
+    @Override
     public boolean delete(String token) {
         synchronized (lock) {
             JSONArray sessions = sessionsArray();

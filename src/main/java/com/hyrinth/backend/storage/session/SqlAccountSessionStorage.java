@@ -148,6 +148,24 @@ public class SqlAccountSessionStorage implements AccountSessionStorage {
     }
 
     @Override
+    public boolean deleteByAccountId(String accountId) {
+        ensureSchema();
+        if (!sql.reconnect()) {
+            Main.getLogger().err("Session storage could not reconnect to SQL backend.");
+            return false;
+        }
+        String query = "DELETE FROM `" + table + "` WHERE `account_id` = ?";
+        try (Connection connection = sql.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, accountId);
+            return statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            Main.getLogger().err("Session storage delete-by-account failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
     public boolean delete(String token) {
         ensureSchema();
         if (!sql.reconnect()) {

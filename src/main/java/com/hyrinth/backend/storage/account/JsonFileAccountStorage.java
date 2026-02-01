@@ -6,11 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class JsonFileAccountStorage implements AccountStorage {
 
@@ -109,6 +105,26 @@ public class JsonFileAccountStorage implements AccountStorage {
     }
 
     @Override
+    public boolean update(AccountRecord record) {
+        synchronized (lock) {
+            if (record == null || record.id() == null || record.id().isBlank()) {
+                return false;
+            }
+            JSONArray users = usersArray();
+            for (int i = 0; i < users.size(); i++) {
+                Object entry = users.get(i);
+                if (entry instanceof JSONObject user) {
+                    if (Objects.equals(user.getString("id"), record.id())) {
+                        users.set(i, fromRecord(record));
+                        return save();
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    @Override
     public boolean updatePasswordHash(String id, String passwordHash, long updatedAt) {
         synchronized (lock) {
             JSONArray users = usersArray();
@@ -135,7 +151,14 @@ public class JsonFileAccountStorage implements AccountStorage {
                 if (entry instanceof JSONObject user) {
                     if (Objects.equals(user.getString("id"), id)) {
                         users.remove(i);
-                        return save();
+                        boolean saved = save();
+                        if (saved) {
+                            com.hyrinth.backend.Main.getHyrinthBackend()
+                                    .getStorageProvider()
+                                    .getSessionStorage()
+                                    .deleteByAccountId(id);
+                        }
+                        return saved;
                     }
                 }
             }

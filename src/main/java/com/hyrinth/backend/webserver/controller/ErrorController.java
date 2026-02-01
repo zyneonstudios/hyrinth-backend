@@ -26,11 +26,11 @@ public class ErrorController {
         connection.put("method", request.getMethod());
 
         JSONObject response = new JSONObject();
-         response.put("error", error);
-         response.put("connection", connection);
-         response.put("description", "Error "+status+" - "+message);
+        response.put("error", error);
+        response.put("connection", connection);
+        response.put("description", "Error " + status + " - " + message);
         response.put("documentation", Main.getHyrinthBackend().getSettings().getDocs());
-         response.put("name", Main.getHyrinthBackend().getSettings().getName());
+        response.put("name", Main.getHyrinthBackend().getSettings().getName());
         response.put("version", Main.getHyrinthBackend().getVersion());
 
         return ResponseEntity.ok(response);

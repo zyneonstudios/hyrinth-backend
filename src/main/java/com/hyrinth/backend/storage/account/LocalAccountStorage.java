@@ -57,6 +57,18 @@ public class LocalAccountStorage implements AccountStorage {
     }
 
     @Override
+    public boolean update(AccountRecord record) {
+        if (record == null || record.id() == null || record.id().isBlank()) {
+            return false;
+        }
+        if (!accounts.containsKey(record.id())) {
+            return false;
+        }
+        accounts.put(record.id(), record);
+        return true;
+    }
+
+    @Override
     public boolean updatePasswordHash(String id, String passwordHash, long updatedAt) {
         AccountRecord record = accounts.get(id);
         if (record == null) {
@@ -81,7 +93,14 @@ public class LocalAccountStorage implements AccountStorage {
 
     @Override
     public boolean delete(String id) {
-        return accounts.remove(id) != null;
+        boolean removed = accounts.remove(id) != null;
+        if (removed) {
+            com.hyrinth.backend.Main.getHyrinthBackend()
+                    .getStorageProvider()
+                    .getSessionStorage()
+                    .deleteByAccountId(id);
+        }
+        return removed;
     }
 
 }

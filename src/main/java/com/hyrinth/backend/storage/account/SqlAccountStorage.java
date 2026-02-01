@@ -193,6 +193,26 @@ public class SqlAccountStorage implements AccountStorage {
     }
 
     @Override
+    public boolean update(AccountRecord record) {
+        ensureSchema();
+        String query = "UPDATE `" + table + "` SET `email` = ?, `username` = ?, `profile_picture` = ?, `is_hidden` = ?,"
+                + " `password_hash` = ?, `is_admin` = ?, `permissions` = ?, `projects` = ?, `teams` = ?, `updated_at` = ? WHERE `id` = ?";
+        return executeUpdate(query, statement -> {
+            statement.setString(1, record.email());
+            statement.setString(2, record.username());
+            statement.setString(3, record.profilePicture());
+            statement.setBoolean(4, record.isHidden());
+            statement.setString(5, record.passwordHash());
+            statement.setBoolean(6, record.isAdmin());
+            statement.setString(7, serializePermissions(record.permissions()));
+            statement.setString(8, serializeProjects(record.projects()));
+            statement.setString(9, serializeTeams(record.teams()));
+            statement.setLong(10, record.updatedAt());
+            statement.setString(11, record.id());
+        });
+    }
+
+    @Override
     public boolean updatePasswordHash(String id, String passwordHash, long updatedAt) {
         ensureSchema();
         String query = "UPDATE `" + table + "` SET `password_hash` = ?, `updated_at` = ? WHERE `id` = ?";
@@ -207,7 +227,14 @@ public class SqlAccountStorage implements AccountStorage {
     public boolean delete(String id) {
         ensureSchema();
         String query = "DELETE FROM `" + table + "` WHERE `id` = ?";
-        return executeUpdate(query, statement -> statement.setString(1, id));
+        boolean removed = executeUpdate(query, statement -> statement.setString(1, id));
+        if (removed) {
+            com.hyrinth.backend.Main.getHyrinthBackend()
+                    .getStorageProvider()
+                    .getSessionStorage()
+                    .deleteByAccountId(id);
+        }
+        return removed;
     }
 
     private Optional<AccountRecord> fetchOne(String query, String value) {

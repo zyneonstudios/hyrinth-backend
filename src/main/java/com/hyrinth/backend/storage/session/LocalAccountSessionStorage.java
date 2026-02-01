@@ -26,6 +26,16 @@ public class LocalAccountSessionStorage implements AccountSessionStorage {
     }
 
     @Override
+    public boolean deleteByAccountId(String accountId) {
+        if (accountId == null || accountId.isBlank()) {
+            return false;
+        }
+        int before = sessions.size();
+        sessions.entrySet().removeIf(entry -> accountId.equals(entry.getValue().accountId()));
+        return sessions.size() != before;
+    }
+
+    @Override
     public boolean delete(String token) {
         return sessions.remove(token) != null;
     }

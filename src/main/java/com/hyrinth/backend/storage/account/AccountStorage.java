@@ -38,6 +38,8 @@ public interface AccountStorage {
 
     boolean create(AccountRecord record);
 
+    boolean update(AccountRecord record);
+
     boolean updatePasswordHash(String id, String passwordHash, long updatedAt);
 
     boolean delete(String id);

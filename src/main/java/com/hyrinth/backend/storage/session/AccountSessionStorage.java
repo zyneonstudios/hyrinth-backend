@@ -10,5 +10,7 @@ public interface AccountSessionStorage {
 
     boolean update(AccountSessionRecord session);
 
+    boolean deleteByAccountId(String accountId);
+
     boolean delete(String token);
 }
