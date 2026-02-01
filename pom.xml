@@ -10,8 +10,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <groupId>org.zyneonstudios.hyrinth</groupId>
-    <artifactId>backend-main</artifactId>
+    <groupId>com.hyrinth</groupId>
+    <artifactId>backend</artifactId>
     <version>26.0-SNAPSHOT.1</version>
 
     <repositories>
