@@ -32,11 +32,9 @@ public class RootController {
         return ErrorController.handleError404(request);
     }
 
-    @RequestMapping(value="/test/yay",method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> getJsonObject(@RequestBody JSONObject jsonObject) {
-        if(jsonObject != null) {
-            System.out.println(jsonObject);
-        }
+    @RequestMapping(value="/api/test",method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> getJsonObject(@RequestHeader("x-api-key") String apiKey, @RequestBody JSONObject jsonObject) {
+
         return new ResponseEntity<>(new JSONObject(), HttpStatus.OK);
     }
 }
