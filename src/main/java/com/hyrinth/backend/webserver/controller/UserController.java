@@ -80,7 +80,7 @@ public class UserController {
             }
 
             String id = jsonObject.getString("id");
-            if(id != null) {
+            if (id != null && !id.isBlank()) {
                 Optional<AccountRecord> target = Main.getHyrinthBackend().getStorageProvider().getAccountStorage().findById(id);
                 if (target.isPresent()) {
                     HyrinthUser targetUser = new HyrinthUser(target.get());
