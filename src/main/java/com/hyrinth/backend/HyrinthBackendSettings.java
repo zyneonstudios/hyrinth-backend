@@ -8,7 +8,7 @@ public class HyrinthBackendSettings {
     private final EditableStorage storage;
     private boolean allowAccountCreation = false;
     private STORAGE_TYPE storageType = STORAGE_TYPE.LOCAL;
-    private String dataPath = "./data/";
+    private String dataPath = "data/";
     private boolean h2Memory = false;
 
     private String mysqlHost = "127.0.0.1";
@@ -130,7 +130,7 @@ public class HyrinthBackendSettings {
         } else {
             storageType = STORAGE_TYPE.LOCAL;
         }
-        storage.ensure("settings.storage.dataPath","./data/");
+        storage.ensure("settings.storage.dataPath","data/");
         dataPath = normalizePath(storage.getString("settings.storage.dataPath"));
         storage.ensure("settings.storage.H2.memory", false);
         h2Memory = Boolean.parseBoolean(storage.getString("settings.storage.H2.memory"));

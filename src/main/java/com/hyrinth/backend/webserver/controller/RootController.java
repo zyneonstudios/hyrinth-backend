@@ -3,9 +3,9 @@ package com.hyrinth.backend.webserver.controller;
 import com.alibaba.fastjson2.JSONObject;
 import com.hyrinth.backend.Main;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RootController {
@@ -21,12 +21,6 @@ public class RootController {
                 response.put("name",Main.getHyrinthBackend().getSettings().getName());
                 response.put("version", Main.getHyrinthBackend().getVersion());
                 return ResponseEntity.ok(response);
-            } else if(path.startsWith("/user")) {
-                if(path.equals("/user")||path.equals("/user/")||path.equals("/users")||path.equals("/users/")) {
-                    return UserController.handleListUsersRequest(request);
-                } else if(path.startsWith("/user/")||path.startsWith("/users/")) {
-                    return UserController.handleGetUserRequest(request);
-                }
             }
         } catch (Exception e) {
             if(Main.getHyrinthBackend().isDebug()) {
@@ -35,7 +29,14 @@ public class RootController {
             }
             return ErrorController.handleError500(request);
         }
-
         return ErrorController.handleError404(request);
+    }
+
+    @RequestMapping(value="/test/yay",method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> getJsonObject(@RequestBody JSONObject jsonObject) {
+        if(jsonObject != null) {
+            System.out.println(jsonObject);
+        }
+        return new ResponseEntity<>(new JSONObject(), HttpStatus.OK);
     }
 }

@@ -36,7 +36,7 @@ public class HyrinthUser {
 
     public void reload() {
         accountRecord = HyrinthBackend.getInstance().getStorageProvider().getAccountStorage().findById(id).orElse(null);
-        if (accountRecord == null) throw new IllegalStateException("AccountRecord for user " + id + " was not found!");
+        if (accountRecord == null) throw new IllegalStateException("AccountRecord for id " + id + " was not found!");
         load();
     }
 
